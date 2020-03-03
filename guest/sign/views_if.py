@@ -1,3 +1,5 @@
+'''Web接口'''
+
 from django.http import JsonResponse
 from sign.models import Event, Guest
 from django.db.utils import IntegrityError
@@ -93,11 +95,12 @@ def get_event_list(request):
 		except ObjectDoesNotExist:
 			return JsonResponse({'status':10022, 'message':'query result is empty'})
 		else:
-			event['name'] == result.name
-			event['limit'] == result.limit
-			event['status'] == result.status
-			event['address'] == result.address
-			event['start_time'] == result.start_time
+			event['eid'] = result.id
+			event['name'] = result.name
+			event['limit'] = result.limit
+			event['status'] = result.status
+			event['address'] = result.address
+			event['start_time'] = result.start_time
 			return JsonResponse({'status':200, 'message':'success', 'data':event})
 	if name != '':
 		datas = []
@@ -105,11 +108,12 @@ def get_event_list(request):
 		if results:
 			for r in results:
 				event = {}
-				event['name'] == r.name
-				event['limit'] == r.limit
-				event['status'] == r.status
-				event['address'] == r.address
-				event['start_time'] == r.start_time
+				event['eid'] = result.id
+				event['name'] = r.name
+				event['limit'] = r.limit
+				event['status'] = r.status
+				event['address'] = r.address
+				event['start_time'] = r.start_time
 				datas.append(event)
 			return JsonResponse({'status':200, 'message':'success', 'data':datas})
 		else:
@@ -151,7 +155,7 @@ def get_guest_list(request):
 			guest['email'] = result.email
 			guest['sign'] = result.sign
 			return JsonResponse({'status':200, 'message':'success', 'data':guest})
-			
+
 
 # 发布会签到接口
 def user_sign(request):

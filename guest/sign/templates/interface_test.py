@@ -44,9 +44,19 @@ def test_user_sign():
 	print(r.status_code)
 	print(r.json())
 
+def test_sec_get_event_list():
+	'测试发布会列表接口-用户认证'
+	auth_user = ('admin', 'admin')
+	datas = {'eid':7}
+	r = requests.get(url='http://127.0.0.1:8000/api/sec_get_event_list/', auth=auth_user, params=datas)
+	print(r.url)
+	print(r.status_code)
+	print(r.json())
+
 if __name__ == '__main__':
 	# test_add_event_all_null()
 	# test_add_guest_all_null()
 	# test_get_event_list()
 	# test_get_guest_list()
-	test_user_sign()
+	# test_user_sign()
+	test_sec_get_event_list()
