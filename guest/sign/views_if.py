@@ -12,14 +12,18 @@ def add_event(request) :
 	status = request.POST.get('status', '')
 	address = request.POST.get('address', '')
 	start_time = request.POST.get('start_time', '')
+
 	if eid == '' or name== '' or limit== '' or address== '' or start_time == '':
 		return JsonResponse({'status':10021, 'message':'parameter error'})
+
 	result = Event.objects.filter(id=eid)
 	if result:
 		return JsonResponse({'status':10022, 'message':'event id already exists'})
+
 	result = Event.objects.filter(name=name)
 	if result:
 		return JsonResponse({'status':10023, 'message':'event name already exists'})
+
 	if status=='':
 		status = 1
 	try:
@@ -27,7 +31,52 @@ def add_event(request) :
 	except ValidationError as e:
 		error = 'start_time format error, It must be in YYYY-MM-DD HH:MM:SS format'
 		return JsonResponse({'status':10024, 'message':error})
+
 	return JsonResponse({'status':200, 'message':'add event success'})
+
+
+# 添加嘉宾接口
+def add_guest(request):
+	eid = request.POST.get('eid', '')				# 关联发布会的id
+	realname = request.POST.get('realname', '')
+	phone = request.POST.get('phone', '')
+	email = request.POST.get('email', '')
+	
+	if eid == '' or realname == '' or phone == '':
+		return JsonResponse({'status':10021, 'message':'parameter error'})
+
+	result = Event.objects.filter(id=eid)
+	if not result:
+		return JsonResponse({'status':10022, 'message':'event id is null'})
+
+	result = Event.objects.get(id=eid).status
+	if not result:		# 发布会必须状态为True
+		return JsonResponse({'status':10023, 'message':'event status is not available'})
+
+	event_limit = Event.objects.get(id=eid).limit			# 发布会限制人数
+	guest_limit = Guest.objects.filter(event_id=eid)			# 发布会已添加人数
+
+	if len(guest_limit) >= event_limit:
+		return JsonResponse({'stauts':10024, 'message':'event number is full'})
+
+	event_time = Event.objects.get(id=eid).start_time	# 发布会开始时间
+	etime = str(event_time).split(".")[0]
+	timeArray = time.strptime(etime, "%Y-%m-%d %H:%M:%S")
+	e_time = int(time.mktime(timeArray))
+
+	now_time = str(time.time())				# 当前时间
+	ntime = now_time.split(".")[0]
+	n_time = int(ntime)
+
+	if n_time >= e_time:
+		return JsonResponse({'stauts':10025, 'message':'event has started'})
+
+	try:
+		Guest.objects.create(realname=realname, phone=int(phone), email=email, sign=0, event_id=int(eid))
+	except IntegrityError:
+		return JsonResponse({'status':10026, 'message':'the event guest phone number repeat'})
+
+	return JsonResponse({'status':200, 'message':'add guest sucess'})
 
 
 # 查询发布会接口
@@ -67,48 +116,6 @@ def get_event_list(request):
 			return JsonResponse({'status':10022, 'message':'query result is empty'})
 
 
-# 添加嘉宾接口
-def add_guest(request):
-	eid = request.POST.get('eid', '')				# 关联发布会的id
-	realname = request.POST.get('realname', '')
-	phone = request.POST.get('phone', '')
-	email = request.POST.get('email', '')
-	
-	if eid == '' or realname == '' or phone == '':
-		return JsonResponse({'status':10021, 'message':'parameter error'})
-
-	result = Event.objects.filter(id=eid)
-	if not result:
-		return JsonResponse({'status':10022, 'message':'event id is null'})
-
-	result = Event.objects.get(id=eid).status
-	if not result:		# 发布会必须状态为True
-		return JsonResponse({'status':10023, 'message':'event status is not available'})
-
-	event_list = Event.objects.get(id=eid).limit			# 发布会限制人数
-	guest_list = Guest.objects.filter(event_id=eid)			# 发布会已添加人数
-
-	if len(guest_list) >= event_list:
-		return JsonResponse({'stauts':10024, 'message':'event number is full'})
-
-	event_time = Event.objects.get(id=eid).start_time	# 发布会开始时间
-	etime = str(event_time).split(".")[0]
-	tiemArray = time.strptime(etime, "%Y-%m-%d %H:%M:%S")
-	e_time = int(time.mktime(tiemArray))
-
-	now_time = str(time.time())				# 当前时间
-	ntime = now_time.split(".")[0]
-	n_time = int(ntime)
-
-	if n_time >= e_time:
-		return JsonResponse({'stauts':10025, 'message':'event has started'})
-
-	try:
-		Guest.objects.create(realname=realname, phone=int(phone), email=email, sign=0, event_id=int(event_id))
-	except IntegrityError:
-		return JsonResponse({'status':10026}, 'message':'the event guest phone number repeat')
-
-	return JsonResponse({'status':200, 'message':'add guest sucess'})
 
 # 查询嘉宾接口
 def get_guest_list(request):
@@ -144,6 +151,7 @@ def get_guest_list(request):
 			guest['email'] = result.email
 			guest['sign'] = result.sign
 			return JsonResponse({'status':200, 'message':'success', 'data':guest})
+			
 
 # 发布会签到接口
 def user_sign(request):
@@ -178,4 +186,11 @@ def user_sign(request):
 
 	result = Guest.objects.filter(event_id=eid, phone=phone)
 	if not result:		
-		return JsonResponse({'status':10022, 'message':'event id is null'})
+		return JsonResponse({'status':10026, 'message':'user did not participate in the conference'})
+
+	result = Guest.objects.filter(event_id=eid, phone=phone).sign
+	if result:		# True标识已经签到过了
+		return JsonResponse({'status':10027, 'message':'user has sign in'})
+	else:
+		Guest.objects.filter(event_id=eid, phone=phone).update(sign='1')
+		return JsonResponse({'status':200, 'message':'sign success'})

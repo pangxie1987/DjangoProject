@@ -44,5 +44,5 @@ urlpatterns = [
     url('guest_delete/(?P<eid>[0-9]+)/', views.guest_delete),
     url('guest_insert_index/', views.guest_insert_index),
     url('guest_insert_action/', views.guest_insert_action),
-    url('api/', include('sign.urls', namespace='sign')),
+    url('api/', include(('sign.urls', 'sign'), namespace="sign")),     # 书中此处写法有误，注意！！
 ]
