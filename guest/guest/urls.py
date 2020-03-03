@@ -16,7 +16,8 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from sign import views
-from django.conf.urls import url
+from django.conf.urls import url, include
+
 urlpatterns = [
 	path('', views.index),
     path('admin/', admin.site.urls),
@@ -43,4 +44,5 @@ urlpatterns = [
     url('guest_delete/(?P<eid>[0-9]+)/', views.guest_delete),
     url('guest_insert_index/', views.guest_insert_index),
     url('guest_insert_action/', views.guest_insert_action),
+    url('api/', include('sign.urls', namespace='sign')),
 ]
