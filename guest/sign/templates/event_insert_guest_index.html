@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+	{% load bootstrap3 %}
+	{% bootstrap_css %}
+	{% bootstrap_javascript %}
+	<title>添加嘉宾</title>
+</head>
+<body>
+	<!-- 导航栏 -->
+	<nav class="navbar navbar-inverse navbar-fixed-top">
+		<div class="container">
+			<div class="navbar-header">
+				<a class="navbar-brand" href="#">{{ event.name }}</a>
+			</div>
+			<div id="navbar" class="collapse navbar-collapse">
+				<ul class="nav navbar-nav">
+					<li><a href="/event_manage/">发布会</a></li>
+					<li><a href="/guest_manage/">嘉宾</a></li>
+				</ul>
+			</div>
+		</div>
+	</nav>
+
+	<!-- 添加嘉宾 -->
+	<div class="page-header" style="padding-top: 80px;">
+		<div id="navbar" class="navbar-collapse collapse">
+			<form class="navbar-form" method="post" action="/event_insert_guest_action/{{ event.id }}/">
+				<div class="form-group">
+					<input type="text" name="realname" placeholder="姓名" class="form-control">
+				</div>
+				<div class="form-group">
+					<input type="text" name="phone" placeholder="手机号" class="form-control">
+				</div>
+				<div class="form-group">
+					<input type="text" name="email" placeholder="Email" class="form-control">
+				</div>
+				<button type='submit' class='btn btn-success'>添加</button>
+				<font color="red">
+					<br>{{ hint }}
+					<br>{{ guest.realname }}
+					<br>{{ guest.phone }}
+				</font>
+			</form>
+		</div>
+		
+	</div>
+
+</body>
+</html>
