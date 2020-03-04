@@ -1,6 +1,6 @@
 '''接口测试'''
-
-import requests
+from time import time
+import requests, hashlib
 
 base_url = 'http://127.0.0.1:8000/api/'
 
@@ -53,10 +53,33 @@ def test_sec_get_event_list():
 	print(r.status_code)
 	print(r.json())
 
+
+def test_add_event_success_sign():
+	"新增发布会：时间戳+签名"
+
+	# 客户端时间戳及签名
+	api_key = "#Guest-Bugmaster"
+	now_time = time()
+	client_time = str(now_time).split('.')[0]
+	# sign
+	md5 = hashlib.md5()
+	sign_str = client_time + api_key
+	sign_bytes_utf8 = sign_str.encode(encoding='utf-8')
+	md5.update(sign_bytes_utf8)
+	sign_md5 = md5.hexdigest()
+
+	url = 'http://127.0.0.1:8000/api/sec_add_event/'
+	# 请求数据
+	payload = {'eid':11,'name':'小米11-pro发布会11','limit':'23000','address':'上海梅赛德斯奔驰中心','start_time':'2017-01-01 19:00:00','time':client_time,'sign':sign_md5}
+	r = requests.post(url=url, data=payload)
+	print(r.text)
+
+
 if __name__ == '__main__':
 	# test_add_event_all_null()
 	# test_add_guest_all_null()
 	# test_get_event_list()
 	# test_get_guest_list()
 	# test_user_sign()
-	test_sec_get_event_list()
+	# test_sec_get_event_list()
+	test_add_event_success_sign()

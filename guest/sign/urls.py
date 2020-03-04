@@ -15,4 +15,6 @@ urlpatterns = [
 	url('user_sign/', views_if.user_sign, name='user_sign'),
 	# ex: /api/sec_get_event_list/
 	url('sec_get_event_list/', views_if_sec.get_event_list, name='get_event_list'),
+	# ex: /api/sec_add_event/
+	url('sec_add_event/', views_if_sec.add_event, name='add_event'),
 	]
