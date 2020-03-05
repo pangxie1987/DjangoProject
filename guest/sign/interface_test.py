@@ -1,6 +1,9 @@
 '''接口测试'''
 from time import time
 import requests, hashlib
+from Crypto.Cipher import AES
+import json
+import base64
 
 base_url = 'http://127.0.0.1:8000/api/'
 
@@ -74,6 +77,34 @@ def test_add_event_success_sign():
 	r = requests.post(url=url, data=payload)
 	print(r.text)
 
+def encryptBase64(src):
+	return base64.urlsafe_b64encode(src)
+
+def encryptAES(src, key):
+	'生成AES密文'
+	
+	iv = "1172311105789011"
+	BS = 16
+	pad= lambda s:s + (BS-len(s)%BS) * chr(BS-len(s)%BS)
+	# bs = AES.block_size
+	# pad = lambda s: s + (bs - len(s) % bs) * chr(bs - len(s) % bs)
+	cryptor = AES.new(key.encode('utf-8'), AES.MODE_CBC, iv)
+	ciphertext = cryptor.encrypt(pad(src.encode('utf-8')))
+	return encryptBase64(ciphertext)
+
+def test_aes_interface():
+	"AES 加密"
+	
+	base_url = "http://127.0.0.1:8000/api/sec_get_guest_list"
+	app_key = 'W7v4D60fds2Cmk2U'
+
+	payload = {'eid':'5', 'phone':'13455555555'}
+	encoded = encryptAES(json.dumps(payload), app_key).decode()
+	r = requests.post(base_url, data={'data': encodeed})
+	print(r.text)
+
+
+
 
 if __name__ == '__main__':
 	# test_add_event_all_null()
@@ -82,4 +113,5 @@ if __name__ == '__main__':
 	# test_get_guest_list()
 	# test_user_sign()
 	# test_sec_get_event_list()
-	test_add_event_success_sign()
+	# test_add_event_success_sign()
+	test_aes_interface()

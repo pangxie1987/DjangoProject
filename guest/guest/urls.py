@@ -17,6 +17,8 @@ from django.contrib import admin
 from django.urls import path
 from sign import views
 from django.conf.urls import url, include
+from django.views import static
+from django.conf import settings
 
 urlpatterns = [
 	path('', views.index),
@@ -45,4 +47,6 @@ urlpatterns = [
     url('guest_insert_index/', views.guest_insert_index),
     url('guest_insert_action/', views.guest_insert_action),
     url('api/', include(('sign.urls', 'sign'), namespace="sign")),     # 书中此处写法有误，注意！！
+    url(r'^static/(?P<path>.*)$', static.serve, {'document_root': settings.STATIC_ROOT}, name='static'),
+
 ]

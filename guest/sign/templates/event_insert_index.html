@@ -1,7 +1,8 @@
 <html>
 <head>
-	<script src="../static/js/jquery-3.4.1.js"></script>
-	<script src="../static/js/jquery-3.4.1.min.js"></script>
+	<!-- <script src="../static/js/jquery-3.4.1.js"></script>
+	<script src="../static/js/jquery-3.4.1.min.js"></script> -->
+	<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
 	{% load bootstrap3 %}
 	{% bootstrap_css %}
 	{% bootstrap_javascript %}
@@ -29,6 +30,7 @@
 	<script type="text/javascript" src="../static/js/jquery.cxcalendar.languages.js"></script>
 	<!-- 新增发布会 -->
 	<div class="page-header" style="padding-top: 80px;">
+		<!-- <img src="../static/image/404error.jpg" /> -->
 		<h3>新增发布会</h3>
 		<div id="navbar" class="navbar-collapse collapse">
 			<form class="navbar-form" method="post" action="/event_insert_action/">
@@ -43,7 +45,7 @@
 				</div>
 				<div class="form-group">
 					<!-- <input id="datetime_set" type="text" name="start_time" placeholder="开始时间" class="input" readonly> -->
-					<input id="datetime_set" type="text" name="start_time" placeholder="开始时间" class="input" readonly>
+					<input id="datetime_set" type="text" name="start_time" placeholder="开始时间" class="input">
 				</div>
 				<button type='submit' class='btn btn-success'>新增</button>
 				<font color="red">
