@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<script type="text/javascript" src="vue.js" charset="UTF-8"></script>
+	</head>
+	<body>
+		<ul id="example-1">
+			<li v-for="item in items">
+				{{ item }}
+			</li>
+		</ul>
+		<script type="text/javascript">
+			var example1 = new Vue({
+				el: '#example-1',
+				data: {
+					items:[
+						'FOO', 'Bar'
+					]
+				}
+			})
+		</script>
+		
+		<ul id="example-2">
+			<li v-for="(item, index) in items">
+				{{ parentMessage }} - {{index  }} - {{ item.message }}
+			</li>
+		</ul>
+		<script type="text/javascript">
+			var example2 = new Vue({
+				el: '#example-2',
+				data: {
+					parentMessage: 'Parent',
+					items:[
+						{message:'FOO'},
+						{message:'Bar'}
+					]
+				}
+			})
+		</script>
+		
+		<!-- 在v-for里使用对象 -->
+		<ul id="v-for-object" class="demo">
+			<li v-for="(value, name, index) in object">
+				{{index}}-{{name}}:{{value}}
+			</li>
+		</ul>
+		<script type="text/javascript">
+			var vm = new Vue({
+				el: '#v-for-object',
+				data:{
+					object:{
+						title:'how to do lists in Vue',
+						author: 'jack',
+						publishedAt: '2020-03-10'
+					}
+				}
+			})
+		</script>
+		
+		<!-- 显示过滤/排序后的结果，不实际改变或重置原始数据 -->
+		<div id="app6">
+			<li v-for="n in evenNumbers">
+				{{ n }}
+			</li>
+		</div>
+		<script type="text/javascript">
+			var vm = new Vue({
+				el: '#app6',
+				data:{
+					numbers:[1,2,3,4,5]
+				},
+				computed:{
+					evenNumbers:function(){
+						return this.numbers.filter(function (number){
+							return number % 2 === 0
+						})
+					}
+				}
+			})
+		</script>
+		
+		<!-- 在计算属性不适用的情况下（例如，在嵌套v-for循环中）， 可以使用一个方法 -->
+		<div id="app7">
+			<li v-for="n in even(numbers)">
+				{{ n }}
+			</li>
+		</div>
+		<script type="text/javascript">
+			var vm = new Vue({
+				el: '#app7',
+				data:{
+					numbers:[1,2,3,4,5]
+				},
+				methods:{
+					even: function(numbers){
+						return numbers.filter(function (number){
+							return number % 2 === 0
+						})
+					}
+				}
+			})
+		</script>
+		
+		<!-- v-for 也可以接受整数 -->
+		<div id='app8'>
+			<span v-for="n in 10">
+				{{ n }}
+			</span>
+		</div>
+		
+		<script type="text/javascript">
+			var vm = new Vue({
+				el: '#app8',
+				data:{
+					
+				}
+			})
+		</script>
+		
+		
+		<!-- v-for 优先级高于 v-if -->
+		<div id='app9'>
+			<li v-for="todo in todos" v-if="!todo.isComplete">
+				<!-- 上面的代码将只渲染未完成的 todo。 -->
+				{{ todo }}
+			</li>
+		</div>
+		
+		<!-- 而如果你的目的是有条件地跳过循环的执行，那么可以将 v-if 置于外层元素 (或 <template>)上。 -->
+		
+		<div id="app10">
+			<ul v-if="todos.length">
+				<li v-for="todo in todos">
+					{{ todo }}
+				</li>
+			</ul>
+			<p v-else>No todos left!</p>
+		</div>
+	</body>
+</html>

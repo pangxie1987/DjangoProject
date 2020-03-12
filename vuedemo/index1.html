@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<script type="text/javascript" src="vue.js"  charset="UTF-8"></script>
+	</head>
+	<body>
+		<div id="app">
+			{{ a }}
+		</div>
+		
+		<div id = "app2">
+			{{ b }}
+		</div>
+		
+		<script type="text/javascript">
+			var data = {a:1};
+			var vm = new Vue({
+				el: "#app",
+				data: data
+			});
+			// data.a = 3;
+			// vm.$data.a=2
+			vm.$watch('a', function(newVal, oldVal){
+				console.log(newVal, oldVal);
+			})
+			
+			vm.$data.a = 'test'
+			
+			var vm = new Vue({
+				el: '#app2',
+				data: {
+					b: 5566
+				},
+				created: function() {
+					console.log('b is: '+this.b)
+				}
+			})
+		</script>
+		
+		<div id="app3">
+			<p>message: "{{ message }}"</p>
+			<p>time: "{{ now }}"</p>
+			<p>reversedMessage: "{{ reversedMessage }}"</p>
+		</div>
+		<script type="text/javascript">
+			var vm2 = new Vue({
+				el:"#app3",
+				data: {
+					message: 'Hello'
+				},
+				computed: {
+					reversedMessage:function(){
+						return this.message.split('').reverse().join()
+					}
+				},
+				computed: {
+					  now: function () {
+						return Date.now()
+					  }
+					},
+			})
+		</script>
+		<div id="app4">
+			{{ fullName }}--{{ firstName}}
+		</div>
+		<script type="text/javascript">
+			var vm3 = new Vue({
+				el: '#app4',
+				data:{
+					firstName:'FOO',
+					lastName:'Bar'
+				},
+// 				computed:{
+// 					fullName: function() {
+// 						return this.firstName+' '+this.lastName
+// 					}
+// 				}
+				computed:{
+					fullName: {
+						get: function() {
+							return this.firstName + ' ' + this.lastName
+						},
+						set: function(newValue) {
+							var names = newValue.split('')
+							this.firsrName = names[0]
+							this.lastName = names[names.length - 1]
+						}
+					}
+				}
+			})
+		</script>
+<!-- 		<p> Using mustaches: {{ rawHtml }}</p>
+		<p> Using v-html directive: <span v-html="rawHtml"></span></p> -->
+	</body>
+</html>

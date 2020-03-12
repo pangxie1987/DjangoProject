@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<script type="text/javascript" src="vue.js" charset="UTF-8"></script>
+	</head>
+	<body>
+		<script>
+			// 定义一个名为 button-counter 的新组件
+			Vue.component('button-counter', {
+				data: function() {
+					return {
+						count: 0
+					}
+				},
+				template: '<button v-on:click="count++">You clicked me {{ count }} times.</button>'
+			})
+		</script>
+		<div id="components-demo">
+			<button-counter></button-counter>
+		</div>
+		<script>
+			new Vue({
+				el: '#components-demo'
+			})
+		</script>
+		
+		<!-- 组件的复用 -->
+		<div id="components-demo2">
+			<!-- 可以将组件进行任意次数的复用 -->
+			<button-counter></button-counter>
+			<button-counter></button-counter>
+			<button-counter></button-counter>
+		</div>
+		<script>
+			new Vue({
+				el: '#components-demo2'
+			})
+		</script>
+		
+		<!-- 组件局部注册 -->
+		<script type="text/javascript">
+			var ComponentA = { /* ... */ }
+			var ComponentB = {
+				components: {
+					'component-a': ComponentA	//这样ComponentA在ComponentB中可以使用
+				}
+			}
+		</script>
+	</body>
+</html>

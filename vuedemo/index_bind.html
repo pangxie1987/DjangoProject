@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<script type="text/javascript", src="vue.js", charset="UTF-8"></script>
+	</head>
+	<body>
+		<div id="test1" v-bind:style="styleObject">PPP</div>
+		<script type="text/javascript">
+			var vm = new Vue({
+				el: '#test1',
+				data: {
+					styleObject:{
+						color: 'red',
+						fontSize: '123px'
+					}
+				}
+			})
+				
+		</script>
+	</body>
+</html>

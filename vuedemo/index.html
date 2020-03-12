@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<script type="text/javascript" src="vue.js"  charset="UTF-8"></script>
+	</head>
+	<body>
+		<div id="app">
+			{{ message }} {{ name }}
+		</div>
+		
+		<div id="app3">
+			<p v-if="seen">你看到我了！</p>
+		</div>
+		
+		<div id="app4">
+			<ol>
+				<li v-for="todo, index in todos" :key='index'>
+					{{ todo.text }}
+				</li>
+			</ol>
+			<ol v-for="value, key in items">
+				{{key}}:{{ value }}
+			</ol>
+		</div>
+		
+		<div id="app5">
+			<p>{{ message22 }}</p>
+			<button v-on:click="reverseMessage">反转消息</button>
+		</div>
+		
+		<div id="app6">
+			<p> {{ message }}</p>
+			<input v-model="message" />
+		</div>
+		
+		<script type="text/javascript">
+			
+				var app = new Vue({
+				el: '#app',
+				data:{
+					message:'Hello Vue', 
+					name: 'Vueee'
+				}
+			});
+			
+		</script>
+		<script type="text/javascript">
+			var app2 = new Vue({
+				el: '#app3',
+				data:{
+					seen: true
+				}
+			});
+		</script>
+	
+	<script type="text/javascript">
+		var app4 = new Vue({
+			el: "#app4",
+			data: {
+				todos: [
+					{text:'学习Java'},
+					{text: '学习python'},
+					{text:'学习Vue'}
+				],
+				items:{
+					'a':'text',
+					'b':'json'
+				}
+			}
+		})
+	</script>
+	
+	<script type="text/javascript">
+		var app5 = new Vue({
+			el: "#app5",
+			data: {
+				message22: "hello vue"
+			},
+			methods:{
+				reverseMessage: function() {
+					this.message22 = this.message22.split('').reverse().join('')
+				}
+				
+			}
+		});
+	</script>
+	
+	<script type="text/javascript">
+		var app6 = new Vue({
+			el: '#app6',
+			data: {
+				message: 'hello test'
+			}
+		})
+	</script>
+	
+	<div id="app7">
+		<button-counter title="title1:" @clicknow="clicknow">
+			<h2>hi...h2</h2>
+		</button-counter>
+		<button-counter title='title2:'></button-counter>
+	</div>
+	
+	<script type="text/javascript">
+		Vue.component('button-counter',{
+			props:['title'],
+			data: function() {
+				return {
+					count:0
+				}
+			},
+			template:'<div><h1>hi....</h1><button v-on:click="clickfun">{{ title }}you clicked me {{ count }} times.</button><slot></slot></div>',
+			methods:{
+				clickfun:function(){
+					this.count ++;
+					this.$emit('clicknow', this.count);
+				}
+			}
+		})
+		var app7 = new Vue({
+			el: '#app7',
+			data: {
+				
+			},
+			methods:{
+				clicknow: function(e) {
+					console.log(e);
+				}
+			}
+		});
+	</script>
+	
+	<div id='app8'>
+		<ol>
+			<todo-item
+			v-for="item in groceryList"
+			v-bind:todo="item"
+			v-bind:key="item.id"
+			></todo-item>
+		</ol>
+	</div>
+	
+	<script type="text/javascript">
+		Vue.component('todo-item', {
+			props: ['todo'],
+			template: '<li>{{ todo.text }}</li>'
+		})
+		var app8 = new Vue({
+			el: '#app8',
+			data:{
+				groceryList: [
+					{id:0, text:'蔬菜'},
+					{id:1, text:'奶酪'},
+					{id:2, text:'随便其他东西'}
+				]
+			}
+		})
+	</script>
+		
+	</body>
+</html>
