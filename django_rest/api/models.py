@@ -24,8 +24,8 @@ class Guest(models.Model):
 	sign = models.BooleanField()						#签到状态
 	create_time = models.DateTimeField(auto_now=True)	#创建时间，自动获取当前时间
 
-	class Meta:
-		unique_together = ('event', 'phone')	#定义联合主键
+class Meta:
+	unique_together = ('event', 'phone')	#定义联合主键
 
-	def __str__(self):
-		return self.realname
+def __str__(self):
+	return self.realname
