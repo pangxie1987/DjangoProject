@@ -1,7 +1,9 @@
 from fastapi import FastAPI, Query, Path, Body
 from pydantic import BaseModel, Schema
 from enum import Enum
-from typing import Optional, List
+from typing import Optional, List, Set
+from uuid import UUID
+from datetime import datetime, time, timedelta
 
 app = FastAPI()
 
@@ -288,3 +290,99 @@ def read_item_test17(*, item_id:int, item:Goods2=Body(
 	'''
 	results = {"item_id":item_id, "item":item}
 	return results
+
+class Goods3(BaseModel):
+    name: str
+    description: str = None
+    price: float
+    tax: float = None
+    tags: Set[str] = set()	#tags里的字符串必须唯一，不能重复
+
+@app.put("/item/query/test18/{item_id}")
+def read_item_test18(*, item_id:int, item:Goods3=Body(..., embed=True)):
+	'''
+	即收到带有重复数据的请求，该请求也会被转换为一组唯一的项目
+	'''
+	results = {"item_id":item_id, "item":item}
+	return results
+
+class Image(BaseModel):
+	url: str		
+	name: str
+
+class Goods4(BaseModel):
+    name: str
+    description: str = None
+    price: float
+    tax: float = None
+    tags: Set[str] = set()
+    image: Image 	# 使用子模型Image作为属性的类型
+
+@app.put("/item/query/test19/{item_id}")
+def read_item_test19(*, item_id:int, item:Goods4=Body(..., embed=True)):
+	'''
+	即收到带有重复数据的请求，该请求也会被转换为一组唯一的项目
+	'''
+	results = {"item_id":item_id, "item":item}
+	return results
+
+class Goods5(BaseModel):
+    name: str
+    description: str = None
+    price: float
+    tax: float = None
+    tags: Set[str] = set()
+    image: List[Image]=None 	# 子模型列表的属性
+
+@app.put("/item/query/test21/{item_id}")
+def read_item_test21(*, item_id:int, item:Goods5=Body(..., embed=True)):
+	'''
+	即收到带有重复数据的请求，该请求也会被转换为一组唯一的项目
+	'''
+	results = {"item_id":item_id, "item":item}
+	return results
+
+class Offer(BaseModel):
+	name: str
+	description: str=None
+	price: float
+	items: List[Goods5]
+
+@app.post("/item/query/test22/")
+def read_item_test22(*, offer: Offer):
+	'''
+	可以深度嵌套的模型
+	'''
+	results = offer
+	return results
+
+@app.post("/item/query/test23/")
+def read_item_test23(*, images: List[Image]):
+	'''
+	全部列表的请求体
+	'''
+	results = images
+	return results
+
+@app.post("/item/query/test24/{item_id}")
+def read_item_test24(
+	item_id: UUID,
+	start_datetime: datetime=Body(None),
+	end_datetime: datetime=Body(None),
+	repeat_at: time=Body(None),
+	process_after: timedelta=Body(None)):
+
+	start_process = start_datetime + process_after
+	duration = end_datetime - start_process
+	'''
+	全部列表的请求体
+	'''
+	return {
+		"itme_id": item_id,
+		"start_datetime": start_datetime,
+		"end_datetime": end_datetime,
+		"repeat_at": repeat_at,
+		"process_after": process_after,
+		"start_process": start_process,
+		"duration": duration
+		}
