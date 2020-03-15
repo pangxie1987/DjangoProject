@@ -1,5 +1,6 @@
 import requests
 import os
+from datetime import datetime
 
 url = 'http://127.0.0.1:8000'
 
@@ -43,7 +44,28 @@ def test_upload_files_test():
 	print(r.json())
 	print(r.status_code)
 
+def test_items_test34():
+	'测试响应状态码'
+	data = {"name": "Fighters", "size": 6}
+
+	r = requests.put(url=url+'/items/test34/foo123', json=data)
+	print(r.url)
+	print(r.json())
+	print(r.status_code)
+
+def test_update_item():
+	'jsonable_encoder'
+	data = {
+		"title": "Fighters", 
+		"timestamp":str(datetime.now()),
+		"description": "test jsonable_encoderjsonable_encoder"}
+
+	r = requests.put(url=url+'/items/test35/foo123', json=data)
+	print(r.url)
+	print(r.json())
+	print(r.status_code)
+
 if __name__ == '__main__':
-	test_upload_files()
+	test_update_item()
 	# filepath = os.path.join(os.path.dirname(__file__), 'files')
 	# print(filepath)

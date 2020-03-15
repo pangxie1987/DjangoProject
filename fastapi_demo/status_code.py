@@ -1,6 +1,11 @@
-from fastapi import FastAPI, Form, UploadFile, File
+from fastapi import FastAPI, Form, UploadFile, File, Body
 from starlette.status import HTTP_201_CREATED
-from typing import List
+from typing import List, Set
+from pydantic import BaseModel
+from starlette.responses import JSONResponse
+from starlette.status import HTTP_201_CREATED
+from fastapi.encoders import jsonable_encoder
+from datetime import datetime
 
 app = FastAPI()
 
@@ -51,3 +56,70 @@ def upload_files_test(
 		"token": token,
 		"fileb_content_type": fileb.content_type
 	}
+
+class Item(BaseModel):
+	name: str
+	description: str=None
+	price: float
+	tax: float=None
+	tags: Set[str] = []
+
+@app.get("/items/", 
+	response_model=Item,
+	tags=["items", "test"], 
+	summary="test summary", 
+	description="test description",
+	response_description="test response_description")
+def test_tags(*, item: Item):
+	'''
+	tag标记，在swagger中分组
+	'''
+	return item
+
+@app.get("/elements/", tags=["items"], deprecated=True)
+def read_elements():
+	'''
+	deprecated:弃用当前路径
+	'''
+	return [{"item_id": "foo"}]
+
+@app.get("/items/test33/", include_in_schema=False)
+def items_test33():
+	'''
+	include_in_schema:从API文档中排除这个路径
+	'''
+	return [{"item_id":"foo"}]
+
+items = {"foo": {"name": "Fighters", "size": 6}, "bar": {"name": "Tenders", "size": 3}}
+@app.put("/items/test34/{item_id}")
+def items_test34(item_id:str, 
+	size: int=Body(None), 
+	name: str=Body(None)
+	):
+	'''
+	JSONResponse:设置status_code, 并返回内容
+	'''
+
+	if item_id in items:
+		item = items[item_id]
+		item['name'] = name
+		item['size'] = size
+	else:
+		item = {"name": name, "size": size}
+		items[item_id] = item
+	return JSONResponse(status_code=HTTP_201_CREATED, content=item)
+
+class Item3(BaseModel):
+    title: str
+    timestamp: datetime
+    description: str = None
+fake_db = {}
+
+@app.put("/items/test35/{id}")
+def update_item(id:str, item:Item3):
+	'''
+	jsonable_encoder:接收一个对象，如 Pydantic 模型，并返回JSON兼容版本
+	'''
+	json_compatible_item_data = jsonable_encoder(item)
+	fake_db[id] = json_compatible_item_data
+	return fake_db
