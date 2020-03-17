@@ -19,7 +19,8 @@ def get_bd():
 	finally:
 		db.close()
 
-@app.post("/comment/", response_model=schemas.CommentBase)
+# @app.post("/comment/", response_model=schemas.CommentBase)
+@app.post("/comment/")
 def create_comment(comment: schemas.CommentBase, db: Session=Depends(get_bd)):
 	'插入comment数据'
 	print(comment.dict())

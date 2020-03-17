@@ -11,7 +11,8 @@ def get_comment(db: Session, comment_id: int):
 
 def get_comment_by_article_id(db: Session, article_id: int):
 	'根据文章id获取评论'
-	return db.query(models.Comment).filter(models.Comment.article_id == article_id).first()
+	# return db.query(models.Comment).filter(models.Comment.article_id == article_id).first()	# 返回第一条
+	return db.query(models.Comment).filter(models.Comment.article_id == article_id).all()		# 返回所有数据
 
 def create_comment(db: Session, comment: schemas.CommentBase):
 	'插入评论表'
