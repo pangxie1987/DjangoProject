@@ -5,9 +5,9 @@
 from typing import List
 from pydantic import BaseModel
 
-class CommnetBase(BaseModel):
+class CommentBase(BaseModel):
 	'共有属性'
-	artile_id: int
+	article_id: int
 	from_user_id: str
 	to_user_id: str
 	content: str
