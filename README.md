@@ -7,3 +7,4 @@ Django学习
 5、Docs		参考文档
 6、fastapi_demo Fastapi学习
 7、vuedemo	vue学习
+8、fastapi_demo/comment Fastapi学习-构建微信小程序留言板
